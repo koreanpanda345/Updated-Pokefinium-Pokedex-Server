@@ -285,6 +285,53 @@ export const Formats: {[k: string]: FormatData} = {
 			}
 		},
 	},
+	pokefiniumpokedex: {
+		effectType: 'ValidatorRule',
+		name: 'Pokefinium Pokedex',
+		desc: "Only allows Pok&eacute;mon native to the Pokefinium region",
+		banlist: [],
+		onValidateSet(set, format) {
+			const pokefiniumDex = [
+				"Maskpie",
+				"Snagpie",
+				"Magpocket",
+				"Orycto",
+				"Oryculus",
+				"Cunilagus",
+				"Gorouchu",
+				"Mantomoto",
+				"Loliama",
+				"Cottonama",
+				"Akumarae",
+				"Typhlosion-Mega",
+				"Meganium-Mega",
+				"Feraligatr-Mega",
+				"Torterra-Mega",
+				"Empoleon-Mega",
+				"Infernape-Mega",
+				"Dusteon",
+				"Eeveeon",
+				"Maguum",
+				"Buzzdart",
+				"Flylord",
+				"Fairoh",
+				"Faira",
+				"Fairagon",
+				"Veneon",
+				"Rotom-Saucer",
+				"Purrloin-Pokefinium",
+				"Liepard-Pokefinium",
+				"Mirroblin",
+				"Tauros-Pokefinium",
+				"Ratoroc"
+			];
+			const species = this.dex.getSpecies(set.species || set.name);
+			if (!pokefiniumDex.includes(species.baseSpecies) && !pokefiniumDex.includes(species.name) &&
+			!this.ruleTable.has('+' + species.id)) {
+				return [`${species.baseSpecies} is not in the Pokefinium Pokédex.`];
+			}
+		},
+	},
 	isleofarmorpokedex: {
 		effectType: 'ValidatorRule',
 		name: 'Isle of Armor Pokedex',

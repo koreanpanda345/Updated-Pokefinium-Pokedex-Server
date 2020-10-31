@@ -902,6 +902,26 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Dark",
 		contestType: "Clever",
 	},
+	balancedstars: {
+		num: 813,
+		desc: "This move hits the target 2-5 times. This move's type is changes to be what the user's type is.",
+		shortDesc: "This move hits 2-5 times. This move's type changes to what the user's type.",
+		accuracy: 90,
+		basePower: 25,
+		category: "Special",
+		name: "Balanced Stars",
+		type: "Normal",
+		pp: 20,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		multihit: 5,
+		target: "normal",
+		onModifyType(move, pokemon) {
+			if (pokemon.ignoringItem()) return;
+			move.type = pokemon.getTypes().join();
+		},
+		secondary: null,
+	},
 	banefulbunker: {
 		num: 661,
 		accuracy: true,
@@ -1841,6 +1861,25 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Grass",
 		zMove: {basePower: 140},
 		maxMove: {basePower: 130},
+		contestType: "Cool",
+	},
+	bullstampede: {
+		num: 399,
+		accuracy: 85,
+		basePower: 110,
+		category: "Physical",
+		desc: "",
+		shortDesc: "",
+		name: "Bull Stampede",
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, contact: 1, mirror: 1},
+		secondary: {
+			chance: 20,
+			volatileStatus: 'flinch',
+		},
+		target: "normal",
+		type: "Ground",
 		contestType: "Cool",
 	},
 	burningjealousy: {
@@ -2819,6 +2858,27 @@ export const Moves: {[moveid: string]: MoveData} = {
 		critRatio: 2,
 		target: "normal",
 		type: "Poison",
+		contestType: "Cool",
+	},
+	crossslash: {
+		num: -1,
+		accuracy: 85,
+		basePower: 70,
+		category: "Physical",
+		desc: "The user slash in a cross shape. If the user lands a critical hit, it will do more damage.",
+		shortDesc: "If this move lands in a critical hit, the power of this move is increased by 1.3x",
+		name: "Cross Slash",
+		condition: {
+			onCriticalHit(target, source, move) {
+				move.basePower = 0x5B; // 70 * (1/3) = 91
+			},
+		},
+		pp: 20,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1, slash: 1},
+		critRatio: 1,
+		target: "normal",
+		type: "Bug",
 		contestType: "Cool",
 	},
 	crunch: {
@@ -6995,6 +7055,82 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Flying",
 		contestType: "Cool",
 	},
+	goblinsmirror: {
+		num: 447,
+		accuracy: true,
+	   basePower: 0,
+	   damageCallback(pokemon) {
+		 if (!pokemon.volatiles['mirrocoat']) return 0;
+		 return pokemon.volatiles['mirrorcoat'].damage || 1;
+	 },
+		category: "Status",
+		desc: "",
+		shortDesc: "",
+		name: "Goblins Mirror",
+		pp: 10,
+		priority: 4,
+		flags: {protect: 1},
+		stallingMove: true,
+		volatileStatus: 'protect',
+		beforeTurnCallback(pokemon) {
+			pokemon.addVolatile('mirrorcoat');
+		},
+		onPrepareHit(pokemon) {
+			return !!this.queue.willAct && this.runEvent('StallMove', pokemon);
+		},
+		onTryHit(target, source, move) {
+			if (!target.volatiles['mirrorcoat']) return false;
+			if (target.volatiles['mirrorcoat'].position === null) return false;
+	 },
+	   onHit(pokemon) {
+		pokemon.addVolatile('stall');
+	 },
+		condition: {
+			duration: 1,
+			noCopy: true,
+			onStart(tareget, source, move) {
+				this.effectData.position = null;
+				this.effectData.damage = 0;
+		},
+			onRedirectTargetPriority: -1,
+			onRedirectTarget(target, source, source2) {
+				if (source !== this.effectData.target) return;
+				return source.side.foe.active[this.effectData.position];
+		},
+		    onTryHitPriority: 3,
+		    onTryHit(target, source, move) {
+			if (!move.flags['protect']) {
+			if (!move.isZ || (move.isMax && !move.breaksProtect)) target.getMoveHitData(move).zBrokeProtect = true;
+			return;
+			}
+			if (move.smartTarget) {
+				move.smartTarget = false;
+			} else {
+				this.add('-activate', source, 'move: Goblins Mirror');
+			}
+			const lockedmove = source.getVolatile('lockedmove');
+			if (lockedmove) {
+				// Outrage counter is reset
+				if (source.volatiles['lockedmove'].duration === 2) {
+					delete source.volatiles['lockedmove'];
+				}
+			}
+
+			return this.NOT_FAIL;
+		},
+			onDamagingHit(damage, target, source, move) {
+				if (source.side !== target.side && (move.flags['pulse'] || move.flags['sound'])) {
+					this.effectData.position = source.position;
+					this.effectData.damage = 2 * damage;
+				}
+			},
+		},
+		secondary: null,
+		target: "scripted",
+		maxMove: {basePower: 75},
+		contestType: "Tought",
+		type: "Ghost",
+	},
 	grassknot: {
 		num: 447,
 		accuracy: 100,
@@ -8424,6 +8560,34 @@ export const Moves: {[moveid: string]: MoveData} = {
 		type: "Grass",
 		contestType: "Tough",
 	},
+	houdinisflames: {
+		num: 810,
+		accuracy: 90,
+		basePower: 40,
+		category: "Special",
+		desc: "If screens are up, this move will break them. If Prankster is its ability, this move is effected by it, and the user will go first. If the target is a dark type, and the user's ability is Prankster, this move will fail.",
+		shortDesc: "This move will break screens if any are up. This move is effected by Prankster, and user will go first.",
+		name: "Houdini's Flames",
+		pp: 15,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		condition: {
+			onHit(source, target, move) {
+				if (target.types.includes("Dark") && source.ability.includes("Prankster")) {
+					return;
+				}
+			},
+		},
+		onTryHit(target) {
+			target.side.removeSideCondition('reflect');
+			target.side.removeSideCondition('lightscreen');
+			target.side.removeSideCondition('auroraveil');
+		},
+		secondary: null,
+		target: "normal",
+		type: "Dark",
+		contestType: "Cool",
+	},
 	howl: {
 		num: 336,
 		accuracy: true,
@@ -8781,6 +8945,44 @@ export const Moves: {[moveid: string]: MoveData} = {
 		target: "normal",
 		type: "Ice",
 		contestType: "Beautiful",
+	},
+	icelethality: {
+		name: "Ice Lethality",
+		num: 420,
+		accuracy: 90,
+		basePower: 120,
+		category: "Special",
+		desc: "In hail, using this move does not require a turn to recharge. If no hail is present, the user must wait a turn to recharge.",
+		shortDesc: "Charges turn 1. Hits turn 2. No charge in hail.",
+		pp: 10,
+		priority: 0,
+		flags: {charge: 1, protect: 1, mirror: 1},
+		onTryMove(attacker, defender, move) {
+			if (attacker.removeVolatile(move.id)) {
+				return;
+			}
+			this.add('-prepare', attacker, 'Solar Beam', defender);
+			if (['hail'].includes(attacker.effectiveWeather())) {
+				this.attrLastMove('[still]');
+				this.addMove('-anim', attacker, 'Solar Beam', defender);
+				return;
+			}
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
+				return;
+			}
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+		onBasePower(basePower, pokemon, target) {
+			if (['raindance', 'primordialsea', 'sunnyday', 'desolateland', 'sandstorm'].includes(pokemon.effectiveWeather())) {
+				this.debug('weakened by weather');
+				return this.chainModify(0.5);
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Ice",
+		contestType: "Cool",
 	},
 	iceshard: {
 		num: 420,

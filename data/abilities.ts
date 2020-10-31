@@ -118,6 +118,27 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: 1.5,
 		num: 83,
 	},
+		antagonize: {
+			desc: "This Pokemon's Normal-type moves become Dark-type moves and have their power multiplied by 1.2. This effect comes after other effects that change a move's type, but before Ion Deluge and Electrify's effects.",
+			shortDesc: "This Pokemon's Normal-type moves become Dark type and have 1.2x power.",
+			onModifyTypePriority: -1,
+			onModifyType(move, pokemon) {
+				const noModifyType = [
+					'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
+				];
+				if (move.type === 'Normal' && !noModifyType.includes(move.id) && !(move.isZ && move.category !== 'Status')) {
+					move.type = 'Dark';
+					move.antagonizeBoosted = true;
+				}
+			},
+			onBasePowerPriority: 23,
+			onBasePower(basePower, pokemon, target, move) {
+				if (move.antagonizeBoosted) return this.chainModify([0x1333, 0x1000]);
+			},
+			name: "Antagonize",
+			rating: 4,
+			num: 185,
+	},
 	anticipation: {
 		onStart(pokemon) {
 			for (const target of pokemon.side.foe.active) {
@@ -350,6 +371,49 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: 3,
 		num: 171,
 	},
+	bulltactics: {
+		desc: "",
+		shortDesc: "Only able to use the first move chosen in battle, can't use other moves while in. But The User gains a 1.5x boost in Def.",
+		onStart(pokemon) {
+			pokemon.abilityData.choiceLock = "";
+		},
+		onBeforeMove(pokemon, target, move) {
+			if (move.isZOrMaxPowered || move.id === 'struggle') return;
+			if (pokemon.abilityData.choiceLock && pokemon.abilityData.choiceLock !== move.id) {
+				this.addMove('move', pokemon, move.name);
+				this.attrLastMove('[still]');
+				this.debug("Disabled by Bull Tactics");
+				this.add('-fail', pokemon);
+				return false;
+			}
+		},
+		onModifyMove(move, pokemon) {
+			if (pokemon.abilityData.choiceLock || move.isZOrMaxPowered || move.id === 'struggle') return;
+			pokemon.abilityData.choiceLock = move.id;
+		},
+		onModifyAtkPriority: 1,
+		onModifyAtk(atk, pokemon) {
+			if (pokemon.volatiles['dynmax']) return;
+			// PLACEHOLDER
+			this.debug('BullTactics Atk Boost');
+			return this.chainModify(1.5);
+		},
+		onDisableMove(pokemon) {
+			if (!pokemon.abilityData.choiceLock) return;
+			if (pokemon.volatiles['dynmax']) return;
+			for (const moveSlot of pokemon.moveSlots) {
+				if (moveSlot.id !== pokemon.abilityData.choiceLock) {
+					pokemon.disableMove(moveSlot.id, false, this.effectData.sourceEffect);
+				}
+			}
+		},
+		onEnd(pokemon) {
+			pokemon.abilityData.choiceLock = "";
+		},
+		name: "Bull Tactics",
+		rating: 4.5,
+		num: 255,
+	},
 	cheekpouch: {
 		onEatItem(item, pokemon) {
 			this.heal(pokemon.baseMaxhp / 3);
@@ -396,6 +460,19 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		name: "Clear Body",
 		rating: 2,
 		num: 29,
+	},
+	cloakofnightmares: {
+		shortDesc: "If a pokemon makes Contact with Ghosunny, Their Attacks is dropped by 1 stage.",
+		desc: "When a pokemon makes contact with Ghosunny, they see a nightmare, causing them to shake in fear.",
+		onDamagingHit(damage, target, source, move) {
+				if (move.flags['contact']) {
+						this.add('-ability', target, 'Cloak of Nightmares');
+						this.boost({atk: -1}, source, target, null, true);
+				}
+		},
+		name: "Cloak of Nightmares",
+		rating: 10,
+		num: -100,
 	},
 	cloudnine: {
 		onStart(pokemon) {
@@ -870,6 +947,21 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		name: "Electric Surge",
 		rating: 4,
 		num: 226,
+	},
+	elementalevolution: {
+		desc: "This Pokemon's type changes to match the type of the move it is about to use. This effect comes after all effects that change a move's type.",
+		shortDesc: "This Pokemon's type changes to match the type of the move it uses.",
+		onPrepareHit(source, target, move) {
+			if (move.hasBounced) return;
+			const type = move.type;
+			if (type && type !== '???' && source.getTypes().join() !== type) {
+				if(!source.setType(type)) return;
+				this.add('-start', source, 'typechange', type, '[from] ability: Elemental Evolution');
+			}
+		},
+		name: "Elemental Evolution",
+		rating: 4.5,
+		num: 168,
 	},
 	emergencyexit: {
 		onEmergencyExit(target) {
@@ -1732,6 +1824,16 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: -1,
 		num: 103,
 	},
+	laststand: {
+		desc: "When The user has 50% HP or less, all slashing or sword moves will always result in a critical hit.",
+		shortDesc: "When at 50% HP or less, all slashing or sword moves will have a 100% chance of a critical hit.",
+		onTryMove(source, target, move) {
+				if (source.hp <= Math.floor(Math.round(source.maxhp)) && move.flags['slash']) return move.willCrit = true;
+		},
+		name: "Last Stand",
+		rating: 0.5,
+		num: -1,
+	},
 	leafguard: {
 		onSetStatus(status, target, source, effect) {
 			if (['sunnyday', 'desolateland'].includes(target.effectiveWeather())) {
@@ -1909,6 +2011,18 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		name: "Magician",
 		rating: 1.5,
 		num: 170,
+	},
+	magicorb: {
+		shortDesc: "",
+		desc: "",
+		onModifyAccuracy(accuracy) {
+			if (typeof accuracy !== 'number') return;
+			this.debug('Magic Orb - decreasing accuracy');
+			return accuracy * 0.8;
+		},
+		name: "Magic Orb",
+		rating: 0,
+		num: 81,
 	},
 	magmaarmor: {
 		onUpdate(pokemon) {
@@ -3353,6 +3467,17 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: 3,
 		num: 202,
 	},
+	smallwinged: {
+		shortDesc: "If the user's hp is under 25% of thier max hp, then the user is grounded",
+		onBeforeTurn(pokemon) {
+			if (pokemon.hp <= (pokemon.maxhp / 4)) {
+				return pokemon.isGrounded(true);
+			}
+		},
+		name: "Small Winged",
+		rating: 0,
+		num: 97,
+	},
 	sniper: {
 		onModifyDamage(damage, source, target, move) {
 			if (target.getMoveHitData(move).crit) {
@@ -3654,6 +3779,40 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		rating: 3,
 		num: 5,
 	},
+	suckup: {
+		desc: "If a pokemon uses a Poison-type attack against this pokemon, that Pokemon's attacking stat is havled when calculating the damage to this Pokemon. This pokemon can't be poisoned.",
+		shortDesc: "Poison-type moves against this pokemon deals damage with a halved attacking stat. This pokemon can't be poisoned.",
+		onSourceModifyAtkPriority: 6,
+		onSourceModifyAtk(atk, attacker, defender, move) {
+			if (move.type === "Poison") {
+				this.debug('Suck Up weaken');
+				return this.chainModify(0.5);
+			}
+		},
+		onSourceModifySpAPriority: 5,
+		onSourceModifySpA(atk, attacker, defender, move) {
+			if (move.type === "Poison") {
+				this.debug('Suck Up weaken');
+				return this.chainModify(0.5);
+			}
+		},
+		onUpdate(pokemon) {
+			if (pokemon.status === 'psn' || pokemon.status === 'tox') {
+				this.add('-activate', pokemon, 'ability: Suck Up');
+				pokemon.cureStatus();
+			}
+			return false;
+		},
+		onSetStatus(status, target, source, effect) {
+			if (status.id !== 'psn' || status.id !== 'tox') return;
+			if ((effect as Move)?.status) {
+				this.add('-immune', target, '[from] ability: Suck Up');
+			}
+		},
+		name: "Suck Up",
+		rating: 3.5,
+		num: 47,
+	},
 	suctioncups: {
 		onDragOutPriority: 1,
 		onDragOut(pokemon) {
@@ -3822,6 +3981,16 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		},
 		name: "Teravolt",
 		rating: 3.5,
+		num: 164,
+	},
+	theorizer: {
+		shortDesc: "On switch-in, this Pokemon's Special Attack is rasied by 1 stage.",
+		desc: "The Pokemon will come up with explanations to the unknown. The Pokemon gets a boost in its Spatk. Stat.",
+		onStart(pokemon) {
+			this.boost({spa: 1}, pokemon);
+		},
+		name: "Theorizer",
+		rating: 0,
 		num: 164,
 	},
 	thickfat: {

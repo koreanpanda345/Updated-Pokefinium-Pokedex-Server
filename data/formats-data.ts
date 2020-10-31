@@ -1,4 +1,120 @@
 export const FormatsData: {[k: string]: SpeciesFormatsData} = {
+	maskpie: {
+		isNonstandard: "Custom",
+		tier: "CAP LC",
+	},
+	snagpie: {
+		isNonstandard: "Custom",
+		tier: "CAP NFE",
+	},
+	magpocket: {
+		isNonstandard: "Past",
+		tier: "OU",
+	},
+	orycto: {
+		isNonstandard: "Custom",
+		tier: "CAP LC",
+	},
+	oryculus: {
+		isNonstandard: "Custom",
+		tier: "CAP NFE",
+	},
+	cunilagus: {
+		isNonstandard: "Past",
+		tier: "OU",
+	},
+	gorouchu: {
+		isNonstandard: "Past",
+		tier: "OU",
+	},
+	mantomoto: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	loliama: {
+		isNonstandard: "Custom",
+		tier: "CAP LC",
+	},
+	cottonama: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	akumarae: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	typhlosionmega: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	meganiummega: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	feraligatrmega: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	torterramega: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	empoleonmega: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	infernapemega: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	dusteon: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	eeveeon: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	maguum: {
+		isNonstandard: "Custom",
+		tier: "CAP LC",
+	},
+	buzzdart: {
+		isNonstandard: "Custom",
+		tier: "CAP NFE",
+	},
+	flylord: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	fairoh: {
+		isNonstandard: "Custom",
+		tier: "CAP LC",
+	},
+	faira: {
+		isNonstandard: "Custom",
+		tier: "CAP NFE",
+	},
+	fairagon: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	wynchire: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	wyvascen: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	wyvascenmega: {
+		isNonstandard: "Custom",
+		tier: "CAP",
+	},
+	ratoroc: {
+		isNonstandard: "Past",
+		tier: "OU",
+	},
 	bulbasaur: {
 		tier: "LC",
 	},

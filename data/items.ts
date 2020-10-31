@@ -1511,6 +1511,21 @@ export const Items: {[itemid: string]: ItemData} = {
 		gen: 7,
 		isNonstandard: "Past",
 	},
+	empoleonite: {
+		name: "Empoleonite",
+		spritenum: 607,
+		megaStone: "Empoleon-Mega",
+		megaEvolves: "Empoleon",
+		itemUser: ["Empoleon"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 669,
+		gen: 6,
+		isNonstandard: "CAP",
+		desc: "If held by a Empoleon, this item allows it to Mega Evolve in battle.",
+	},
 	energypowder: {
 		name: "Energy Powder",
 		spritenum: 123,
@@ -1624,6 +1639,21 @@ export const Items: {[itemid: string]: ItemData} = {
 		num: 492,
 		gen: 2,
 		isPokeball: true,
+	},
+	feraligatrite: {
+		name: "Feraligatrite",
+		spritenum: 607,
+		megaStone: "Feraligatr-Mega",
+		megaEvolves: "Feraligatr",
+		itemUser: ["Feraligatr"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 669,
+		gen: 6,
+		isNonstandard: "CAP",
+		desc: "If held by a Feraligatr, this item allows it to Mega Evolve in battle.",
 	},
 	fightinggem: {
 		name: "Fighting Gem",
@@ -2512,6 +2542,21 @@ export const Items: {[itemid: string]: ItemData} = {
 		gen: 7,
 		isNonstandard: "Past",
 	},
+	infernapite: {
+		name: "Infernapite",
+		spritenum: 607,
+		megaStone: "Infernape-Mega",
+		megaEvolves: "Infernape",
+		itemUser: ["Infernape"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 669,
+		gen: 6,
+		isNonstandard: "CAP",
+		desc: "If held by a Infernape, this item allows it to Mega Evolve in battle.",
+	},
 	insectplate: {
 		name: "Insect Plate",
 		spritenum: 223,
@@ -3282,6 +3327,21 @@ export const Items: {[itemid: string]: ItemData} = {
 		num: 665,
 		gen: 6,
 		isNonstandard: "Past",
+	},
+	meganiumite: {
+		name: "Meganiumite",
+		spritenum: 607,
+		megaStone: "Meganium-Mega",
+		megaEvolves: "Meganium",
+		itemUser: ["Meganium"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 655,
+		gen: 6,
+		isNonstandard: "CAP",
+		desc: "If held by a Meganium, this item allows it to Mega Evolve in battle.",
 	},
 	mentalherb: {
 		name: "Mental Herb",
@@ -5530,6 +5590,21 @@ export const Items: {[itemid: string]: ItemData} = {
 		gen: 3,
 		isPokeball: true,
 	},
+	torterraite: {
+		name: "Torterraite",
+		spritenum: 607,
+		megaStone: "Torterra-Mega",
+		megaEvolves: "Torterra",
+		itemUser: ["Torterra"],
+		onTakeItem(item, source) {
+			if(item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 669,
+		gen: 6,
+		isNonstandard: "CAP",
+		desc: "If held by a Torterra, this item allows it to Mega Evolve in battle.",
+	},
 	toxicorb: {
 		name: "Toxic Orb",
 		spritenum: 515,
@@ -6481,6 +6556,21 @@ export const Items: {[itemid: string]: ItemData} = {
 		num: 248,
 		gen: 2,
 	},
+	typhlosionite: {
+		name: "Typhlosionite",
+		spritenum: 607,
+		megaStone: "Typhlosion-Mega",
+		megaEvolves: "Typhlosion",
+		itemUser: ["Typhlosion"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 669,
+		gen: 6,
+		isNonstandard: "CAP",
+		desc: "If held by a Typhlosion, this item allows it to Mega Evolve in battle.",
+	},
 	tyranitarite: {
 		name: "Tyranitarite",
 		spritenum: 607,
@@ -6781,6 +6871,21 @@ export const Items: {[itemid: string]: ItemData} = {
 		},
 		num: 267,
 		gen: 4,
+	},
+	wyvascenite: {
+		name: "Wyvascenite",
+		spritenum: 584,
+		megaStone: "Wyvascen-Mega",
+		megaEvolves: "Wyvascen",
+		itemUser: ["Wyvascen"],
+		onTakeItem(item, source) {
+			if(item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 664,
+		gen: 6,
+		isNonstandard: "CAP",
+		desc: "If held by a Wyvascen, this item allows it to Mega Evolve in battle."
 	},
 	yacheberry: {
 		name: "Yache Berry",
